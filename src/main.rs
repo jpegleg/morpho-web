@@ -6,8 +6,6 @@ use rustls_pemfile::{certs, pkcs8_private_keys};
 use actix_web::{middleware, App, HttpServer};
 use chrono::prelude::*;
 
-extern crate crono;
-
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let readi: DateTime<Utc> = Utc::now();
