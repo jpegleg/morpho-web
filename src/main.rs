@@ -10,7 +10,9 @@ use chrono::prelude::*;
 async fn main() -> std::io::Result<()> {
     let readi: DateTime<Utc> = Utc::now();
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
+
     let config = load_rustls_config();
+    log::info!("morpho initialized at {} >>> morpho HTTPS server on port 443 using rustls TLSv1.3 and TLSv1.2", readi);
     
     HttpServer::new(|| {
         App::new()
@@ -26,6 +28,7 @@ async fn main() -> std::io::Result<()> {
              //.service(redirect("/art/", "/art/index.html"))
              // The directory /app/static is the web root.
              // The ./static directory during the container image build copies in ./static recursively.
+             // To override or add to the static assets, use a volume mount to /app/static/ etc.
             .service(Files::new("/", "static"))
 
     })
