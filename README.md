@@ -12,6 +12,18 @@ The base image is less than 12MB for the entire framework. The size of the added
 will increase the image size etc. Alternatively to doing a copy into the container image,
 the /app/static directory can be a volume mount containing the content to load. Note that by default the cert and key pair are in /app/ which is the workdir for the server, while the webroot is /app/static/.
 
+From the test docker-compose.yml:
+
+```
+    volumes:
+      - /opt/protean-gitops/static/:/app/static/
+      - /opt/protean-gitops/cert.pem:/app/cert.pem
+      - /opt/protean-gitops/privkey.pem:/app/privkey.pem
+```
+
+In production, rather than using Docker, we can use Kubernetes and mount those more appropriately.
+The purpose of the docker-compose.yml and the protean references are for some testing systems usage.
+
 ## rustls for HTTPS
 
 This program uses rustls for TLS, leveraging the strong defaults. It includes support for TLSv1.2 and TLSv1.3 only,
