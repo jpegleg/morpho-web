@@ -40,3 +40,8 @@ web servers. The performance is very good and reliable.
 This web server template is cloud native, working well in Kubernetes and Docker, etc.
 It works well with many replicas, has a minimized set of dependencies and libraries,
 and puts security as a priority.
+
+## redirecting port 80
+
+As of the current version, morpho-web does not redirect port 80 to 443. This type of redirection is to be handled "in front" of the morpho-server for now.
+
