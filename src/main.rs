@@ -3,7 +3,7 @@ use actix_files::Files;
 use actix_web_lab::web::redirect;
 use rustls::{Certificate, PrivateKey, ServerConfig};
 use rustls_pemfile::{certs, pkcs8_private_keys};
-use actix_web::{middleware, App, HttpServer};
+use actix_web::{middleware, App, HttpServer, HttpResponse, web};
 use actix_web_middleware_redirect_https::RedirectHTTPS;
 use chrono::prelude::*;
 
