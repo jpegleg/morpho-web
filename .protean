@@ -3,6 +3,7 @@ protean_build() {
   echo "78a4ea409fed76d3a3 $(date +%Y%m%d%H%M%S) $(git status | head -n2)" > static/build_id.txt
   cp ../privkey.pem ./privkey.pem || exit 1
   cp ../cert.pem ./cert.pem || exit 1
+  # not inserting any static content to test build image other than build_id.txt
   #cp -r ../static/* ./static/
   ls privkey.pem || exit 1
   ls cert.pem || exit 1
@@ -14,7 +15,7 @@ protean_build() {
 protean_test() {
   ~/.cargo/bin/cargo doc
   rm -rf ../morpho-docs/
-  mv target/doc ../morpho-docs
+  mv target/doc ../static/morpho-docs
   ~/.cargo/bin/cargo clean
   trivy image "localhost:5000/morpho-web:test" > ../morpho_trivy-report_$(date +%Y%m%d%H%M%S).txt
   docker-compose up -d
