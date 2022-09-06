@@ -6,4 +6,7 @@ services:
     restart: unless-stopped
     ports:
       - "443:443"
-    
+    volumes:
+      - /opt/protean-gitops/static/:/app/static/
+      - /opt/protean-gitops/cert.pem:/app/cert.pem
+      - /opt/protean-gitops/privkey.pem:/app/privkey.pem
