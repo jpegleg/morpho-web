@@ -1,6 +1,6 @@
 protean_build() {
   mkdir static 2>/dev/null
-  echo "78a4ea409fed76d3a3 $(date +%Y%m%d%H%M%S) $(git status)" > static/build_id.txt
+  echo "78a4ea409fed76d3a3 $(date +%Y%m%d%H%M%S) $(git status | head -n2)" > static/build_id.txt
   cp ../privkey.pem ./privkey.pem || exit 1
   cp ../cert.pem ./cert.pem || exit 1
   #cp -r ../static/* ./static/
