@@ -3,15 +3,15 @@ protean_build() {
   echo "78a4ea409fed76d3a3" > static/build_id.txt
   echo "Before template copy we detected: $(sha256sum cert.pem)"
   openssl x509 -in ../morpho-web_chain.pem -text -noout || exit 1
-  cp ../morpho-web_key.pem ./key.pem || exit 1
+  cp ../morpho-web_key.pem ./privkey.pem || exit 1
   cp ../morpho-web_chain.pem ./cert.pem || exit 1
   tar czvf static_last.tgz static
   sha256sum static.tgz
-  cp -r ../static ./static/
-  ls key.pem || exit 1
+  cp -r ../static/* ./static/
+  ls privkey.pem || exit 1
   ls cert.pem || exit 1
   echo "We expect there to be the leaf and intermediate in the cert.pem."
-  echo "The build detected the following cert.pem: $(sha256sum cert.pem)"
+  echo "The build detected the following cert.pem: $(sha256sum cert.pem privkey.pem)"
 }
 
 protean_test() {
