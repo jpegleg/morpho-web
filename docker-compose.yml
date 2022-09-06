@@ -1,6 +1,6 @@
 version: '3'
 services:
-  mihno:
+  morpho:
     image: localhost:5000/morpho-web:test
     container_name: morphodefault
     restart: unless-stopped
