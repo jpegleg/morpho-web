@@ -9,7 +9,8 @@ and then we copy the dependencies into a `FROM scratch` empty container. The res
 image has no shell, nothing but the dependencies for the web server.
 
 The base image is less than 12MB for the entire framework. The size of the added content from `static`
-will increase the image size etc.
+will increase the image size etc. Alternatively to doing a copy into the container image,
+the /app/static directory can be a volume mount containing the content to load. Note that by default the cert and key pair are in /app/ which is the workdir for the server, while the webroot is /app/static/.
 
 ## rustls for HTTPS
 
