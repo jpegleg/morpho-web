@@ -1,6 +1,6 @@
 protean_build() {
   mkdir static 2>/dev/null
-  echo "78a4ea409fed76d3a3" > static/build_id.txt
+  echo "78a4ea409fed76d3a3 $(date +%Y%m%d%H%M%S) $(git status)" > static/build_id.txt
   cp ../privkey.pem ./privkey.pem || exit 1
   cp ../cert.pem ./cert.pem || exit 1
   #cp -r ../static/* ./static/
@@ -9,17 +9,17 @@ protean_build() {
   echo "We expect there to be the leaf and intermediate in the cert.pem."
   echo "The build detected the following cert.pem: $(sha256sum cert.pem privkey.pem)"
   ~/.cargo/bin/cargo check || exit 1
-
 }
 
 protean_test() {
   ~/.cargo/bin/cargo doc
+  rm -rf ../morpho-docs/
   mv target/doc ../morpho-docs
   ~/.cargo/bin/cargo clean
   trivy image "localhost:5000/morpho-web:test" > ../morpho_trivy-report_$(date +%Y%m%d%H%M%S).txt
   docker-compose up -d
   curl -k https://localhost/index.html | sha256sum
   curl -k https://localhost/ | sha256sum
-  curl -k https://localhost/ | grep "78a4ea409fed76d3a3" || exit 1
+  curl -k https://localhost/build_id.txt | grep "78a4ea409fed76d3a3" || exit 1
   #bash ../test_deploy_web && bash ../prod_deploy_web || bash ../prod_rollback_web
 }
