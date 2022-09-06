@@ -4,6 +4,7 @@ use actix_web_lab::web::redirect;
 use rustls::{Certificate, PrivateKey, ServerConfig};
 use rustls_pemfile::{certs, pkcs8_private_keys};
 use actix_web::{middleware, App, HttpServer};
+use actix_web_middleware_redirect_https::RedirectHTTPS;
 use chrono::prelude::*;
 
 #[actix_web::main]
@@ -21,6 +22,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::DefaultHeaders::new().add(("X_FRAME_OPTIONS", "SAMEORIGIN")))
             .wrap(middleware::DefaultHeaders::new().add(("X_XSS_PROTECTION", "1; mode=block")))
             .wrap(middleware::Logger::default())
+            .wrap(RedirectHTTPS::with_replacements(&[(":80".to_owned(), ":443".to_owned())]))
             .service(redirect("/", "/index.html"))
              // Note how two redirects are desired here, one with the trailing slash.
              // This will apply for subdirectory content, directory browsing and automatic redirects are blocked.
