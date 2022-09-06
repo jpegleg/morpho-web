@@ -1,0 +1,21 @@
+protean_build() {
+  mkdir static 2>/dev/null
+  echo "78a4ea409fed76d3a3" > static/build_id.txt
+  echo "Before template copy we detected: $(sha256sum cert.pem)"
+  cp ../morpho-web_key.pem ./key.pem || exit 1
+  cp ../morpho-web_chain.pem ./cert.pem || exit 1
+  ls key.pem || exit 1
+  ls cert.pem || exit 1
+  echo "We expect there to be the leaf and intermediate in the cert.pem."
+  echo "The build detected the following cert.pem: $(sha256sum cert.pem)"
+}
+
+protean_test() {
+  ~/.cargo/bin/cargo clean
+  trivy image "localhost:5000/morpho-web:test" > ../morpho_trivy-report_$(date +%Y%m%d%H%M%S).txt
+  docker-compose up -d
+  curl -k https://localhost/index.html | sha256sum
+  curl -k https://localhost/ | sha256sum
+  curl -k https://localhost/ | grep "78a4ea409fed76d3a3" || exit 1
+  #bash ../test_deploy_web && bash ../prod_deploy_web || bash ../prod_rollback_web
+}
