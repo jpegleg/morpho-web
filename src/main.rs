@@ -16,6 +16,13 @@ async fn main() -> std::io::Result<()> {
     
     HttpServer::new(|| {
         App::new()
+             // These headers get formatted oddly, which will cause (false negative) issues for being missing :(
+             // regardless of how they are coded with the .add here, they will be set lower-case like the following:
+             //strict-transport-security: max-age=31536000; includeSubdomains;
+             //x-content-type-options: nosniff
+             //x-frame-options: SAMEORIGIN
+             //x-xss-protection: 1; mode=block
+             // most checkers look for the formatting like how I entered them! Strict-Transport-Security not strict-transport-security
             .wrap(middleware::DefaultHeaders::new().add(("Strict-Transport-Security", "max-age=31536000; includeSubdomains;")))
             .wrap(middleware::DefaultHeaders::new().add(("X-Content-Type-Options", "nosniff")))
             .wrap(middleware::DefaultHeaders::new().add(("X-Frame-Options", "SAMEORIGIN")))
@@ -29,6 +36,8 @@ async fn main() -> std::io::Result<()> {
              // The directory /app/static is the web root.
              // The ./static directory during the container image build copies in ./static recursively.
              // To override or add to the static assets, use a volume mount to /app/static/ etc.
+
+             // This redirect behavior isn't the same as NGINX and Apache so may break some things!
             .service(Files::new("/", "static"))
 
     })
