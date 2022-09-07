@@ -4,6 +4,8 @@ use actix_web_lab::web::redirect;
 use rustls::{Certificate, PrivateKey, ServerConfig};
 use rustls_pemfile::{certs, pkcs8_private_keys};
 use actix_web::{middleware, App, HttpServer};
+use actix_web_lab::{header::StrictTransportSecurity, middleware::RedirectHttps};
+
 use chrono::prelude::*;
 
 #[actix_web::main]
@@ -13,16 +15,10 @@ async fn main() -> std::io::Result<()> {
 
     let config = load_rustls_config();
     log::info!("morpho initialized at {} >>> morpho HTTPS server on port 443 using rustls TLSv1.3 and TLSv1.2", readi);
-    
     HttpServer::new(|| {
         App::new()
-             // These headers get formatted oddly, which will cause (false negative) issues for being missing :(
-             // regardless of how they are coded with the .add here, they will be set lower-case like the following:
-             //strict-transport-security: max-age=31536000; includeSubdomains;
-             //x-content-type-options: nosniff
-             //x-frame-options: SAMEORIGIN
-             //x-xss-protection: 1; mode=block
-             // most checkers look for the formatting like how I entered them! Strict-Transport-Security not strict-transport-security
+            .wrap(RedirectHttps::default())
+            .wrap(RedirectHttps::with_hsts(StrictTransportSecurity::recommended()))
             .wrap(middleware::DefaultHeaders::new().add(("Strict-Transport-Security", "max-age=31536000; includeSubdomains;")))
             .wrap(middleware::DefaultHeaders::new().add(("X-Content-Type-Options", "nosniff")))
             .wrap(middleware::DefaultHeaders::new().add(("X-Frame-Options", "SAMEORIGIN")))
