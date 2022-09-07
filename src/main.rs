@@ -1,18 +1,22 @@
 use std::{fs::File, io::BufReader};
 use actix_files::Files;
-use actix_web_lab::web::redirect;
 use rustls::{Certificate, PrivateKey, ServerConfig};
 use rustls_pemfile::{certs, pkcs8_private_keys};
-use actix_web::{middleware, App, HttpServer};
+use actix_web::{middleware, App, HttpServer, get, Responder};
+use actix_files::NamedFile;
 use actix_web_lab::{header::StrictTransportSecurity, middleware::RedirectHttps};
 
 use chrono::prelude::*;
+
+#[get("/")]
+async fn index() -> impl Responder {
+    NamedFile::open_async("./static/index.html").await
+}
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let readi: DateTime<Utc> = Utc::now();
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
-
     let config = load_rustls_config();
     log::info!("morpho initialized at {} >>> morpho HTTPS server on port 443 using rustls TLSv1.3 and TLSv1.2", readi);
     HttpServer::new(|| {
@@ -24,16 +28,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::DefaultHeaders::new().add(("X-Frame-Options", "SAMEORIGIN")))
             .wrap(middleware::DefaultHeaders::new().add(("X-XSS-Protection", "1; mode=block")))
             .wrap(middleware::Logger::default())
-            .service(redirect("/", "/index.html"))
-             // Note how two redirects are desired here, one with the trailing slash.
-             // This will apply for subdirectory content, directory browsing and automatic redirects are blocked.
-             //.service(redirect("/art", "/art/index.html"))
-             //.service(redirect("/art/", "/art/index.html"))
-             // The directory /app/static is the web root.
-             // The ./static directory during the container image build copies in ./static recursively.
-             // To override or add to the static assets, use a volume mount to /app/static/ etc.
-
-             // This redirect behavior isn't the same as NGINX and Apache so may break some things!
+            .service(index)
             .service(Files::new("/", "static"))
 
     })
