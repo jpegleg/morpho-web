@@ -45,3 +45,7 @@ and puts security as a priority.
 
 As of the current version, morpho-web does not redirect port 80 to 443. This type of redirection is to be handled "in front" of the morpho-server for now.
 
+## header formatting warning
+
+A downside of this software currently is that the headers get set to lowercase which is causing various checks and detection mechanisms to fail.
+
