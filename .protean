@@ -18,9 +18,12 @@ protean_test() {
   ~/.cargo/bin/cargo doc
   rm -rf ../morpho-docs/
   mv target/doc ../static/morpho-docs
+  ~/.cargo/bin/cargo clippy
+  #~/.cargo/bin/cargo clippy --all-targets --all-features -- -D warnings
   ~/.cargo/bin/cargo clean
   trivy image "localhost:5000/morpho-web:test" > ../morpho_trivy-report_$(date +%Y%m%d%H%M%S).txt
   docker-compose up -d
+  curl -vvv -k https://localhost/index.html
   curl -k https://localhost/index.html | sha256sum
   curl -k https://localhost/ | sha256sum
   curl -k https://localhost/build_id.txt | grep "78a4ea409fed76d3a3" || exit 1
