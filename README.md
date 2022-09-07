@@ -49,3 +49,4 @@ As of the current version, morpho-web does not redirect port 80 to 443. This typ
 
 A downside of this software currently is that the headers get set to lowercase which is causing various checks and detection mechanisms to fail.
 
+Read more about this here: https://github.com/actix/actix-web/issues/2862
