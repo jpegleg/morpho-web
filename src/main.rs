@@ -16,10 +16,10 @@ async fn main() -> std::io::Result<()> {
     
     HttpServer::new(|| {
         App::new()
-            .wrap(middleware::DefaultHeaders::new().add(("STRICT_TRANSPORT_SECURITY", "max-age=31536000; includeSubdomains;")))
-            .wrap(middleware::DefaultHeaders::new().add(("X_CONTENT_TYPE_OPTIONS", "nosniff")))
-            .wrap(middleware::DefaultHeaders::new().add(("X_FRAME_OPTIONS", "SAMEORIGIN")))
-            .wrap(middleware::DefaultHeaders::new().add(("X_XSS_PROTECTION", "1; mode=block")))
+            .wrap(middleware::DefaultHeaders::new().add(("Strict-Transport-Security", "max-age=31536000; includeSubdomains;")))
+            .wrap(middleware::DefaultHeaders::new().add(("X-Content-Type-Options", "nosniff")))
+            .wrap(middleware::DefaultHeaders::new().add(("X-Frame-Options", "SAMEORIGIN")))
+            .wrap(middleware::DefaultHeaders::new().add(("X-XSS-Protection", "1; mode=block")))
             .wrap(middleware::Logger::default())
             .service(redirect("/", "/index.html"))
              // Note how two redirects are desired here, one with the trailing slash.
