@@ -41,7 +41,11 @@ This web server template is cloud native, working well in Kubernetes and Docker,
 It works well with many replicas, has a minimized set of dependencies and libraries,
 and puts security as a priority.
 
-## redirecting port 80
+## redirecting to HTTPS
 
-As of the current version, morpho-web does not redirect port 80 to 443. This type of redirection is to be handled "in front" of the morpho-server for now.
+Port redirection is included by default now.
+
+## security headers
+
+HSTS and security headers are inserted by default.
 
