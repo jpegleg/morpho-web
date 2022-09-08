@@ -16,7 +16,7 @@ protean_build() {
 
 protean_test() {
   ~/.cargo/bin/cargo doc
-  rm -rf ../morpho-docs/
+  rm -rf ../static/morpho-docs/
   mv target/doc ../static/morpho-docs
   ~/.cargo/bin/cargo clippy
   #~/.cargo/bin/cargo clippy --all-targets --all-features -- -D warnings
