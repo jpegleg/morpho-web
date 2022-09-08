@@ -16,10 +16,11 @@ async fn index(req: HttpRequest) -> impl Responder {
     let peer = req.peer_addr();
     // Additional logging options examples with headers:
     //let requ = req.headers(); 
+    // and then we would add it like so: log::info!("{} Transaction ID generated for {:?} visiting website - {:?}", txid, peer, requ);
     // Please note that the Transction ID is a sticky environment variable, so
     // there can be things that don't hit '/' in this case that use the same transaction id!
     // This behavior can be adjusted as needed using additional handlers etc. Example: /*.html 
-    log::info!("{} Transaction ID generated for {:?} visiting website", txid, peer, requ);
+    log::info!("{} Transaction ID generated for {:?} visiting website", txid, peer);
     NamedFile::open_async("./static/index.html").await
 }
 
