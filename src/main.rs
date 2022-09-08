@@ -12,7 +12,6 @@ use std::env;
 #[get("/health")]
 async fn health(req: HttpRequest) -> impl Responder {
     let peer = req.peer_addr();
-    env::set_var("txid", "txid unset");
     log::info!("Health check from {:?} ", peer);
     NamedFile::open_async("./static/index.html").await
 }
@@ -25,7 +24,9 @@ async fn index(req: HttpRequest) -> impl Responder {
     let requ = req.headers(); 
     // Please note that the Transction ID is a sticky environment variable, so
     // there can be things that don't hit '/' in this case that use the same transaction id!
-    // This behavior can be adjusted as needed using additional handlers etc. Example: /*.html 
+    // This behavior can be adjusted as needed using additional handlers etc. The idea is that
+    // the middleware logger has a loose association with regular website visitors/users/systems
+    // while any requests passed to a backend/db can have a tight transaction id association.
     log::info!("{} Transaction ID generated for {:?} visiting website - {:?}", txid, peer, requ);
     NamedFile::open_async("./static/index.html").await
 }
