@@ -10,11 +10,12 @@ use chrono::prelude::*;
 
 #[get("/")]
 async fn index(req: HttpRequest) -> impl Responder {
-    let txid = Uuid::new_v4();
+    let txid = Uuid::new_v4().to_string();
+    env::set_var("txid", &txid);
     let peer = req.peer_addr();
-    // To log the headers, bring in requ and add that to the info log, like at the end.
-    //let requ = req.headers();
-    log::info!("{} Transaction ID generated for {:?} visiting website root", txid, peer);
+    // Additional logging options examples with headers:
+    //let requ = req.headers(); 
+    log::info!("{} Transaction ID generated for {:?} visiting website root", txid, peer, requ);
     NamedFile::open_async("./static/index.html").await
 }
 
@@ -39,8 +40,8 @@ async fn main() -> std::io::Result<()> {
             // this access logging can be optionally commented to only log Transaction function
             // data above :)
             //.wrap(middleware::Logger::default())
-            // We'll bring in just a more minimal format by default for the middleware logger:
-            .wrap(middleware::Logger::new("%a -> HTTP %s %r size: %b time: %T"))
+            // We'll bring in a custom that includes the transaction ID by default for the middleware logger:
+            .wrap(middleware::Logger::new("%{txid}e %a -> HTTP %s %r size: %b time: %T"))
             .service(index)
             // add additional services here after index service before the static Files service below
             .service(Files::new("/", "static"))
