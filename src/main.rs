@@ -7,6 +7,7 @@ use actix_files::NamedFile;
 use actix_web_lab::{header::StrictTransportSecurity, middleware::RedirectHttps};
 use uuid::Uuid;
 use chrono::prelude::*;
+use std::env;
 
 #[get("/")]
 async fn index(req: HttpRequest) -> impl Responder {
@@ -15,7 +16,10 @@ async fn index(req: HttpRequest) -> impl Responder {
     let peer = req.peer_addr();
     // Additional logging options examples with headers:
     //let requ = req.headers(); 
-    log::info!("{} Transaction ID generated for {:?} visiting website root", txid, peer, requ);
+    // Please note that the Transction ID is a sticky environment variable, so
+    // there can be things that don't hit '/' in this case that use the same transaction id!
+    // This behavior can be adjusted as needed using additional handlers etc. Example: /*.html 
+    log::info!("{} Transaction ID generated for {:?} visiting website", txid, peer, requ);
     NamedFile::open_async("./static/index.html").await
 }
 
