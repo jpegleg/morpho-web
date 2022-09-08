@@ -14,13 +14,11 @@ async fn index(req: HttpRequest) -> impl Responder {
     let txid = Uuid::new_v4().to_string();
     env::set_var("txid", &txid);
     let peer = req.peer_addr();
-    // Additional logging options examples with headers:
-    //let requ = req.headers(); 
-    // and then we would add it like so: log::info!("{} Transaction ID generated for {:?} visiting website - {:?}", txid, peer, requ);
+    let requ = req.headers(); 
     // Please note that the Transction ID is a sticky environment variable, so
     // there can be things that don't hit '/' in this case that use the same transaction id!
     // This behavior can be adjusted as needed using additional handlers etc. Example: /*.html 
-    log::info!("{} Transaction ID generated for {:?} visiting website", txid, peer);
+    log::info!("{} Transaction ID generated for {:?} visiting website - {:?}", txid, peer, requ);
     NamedFile::open_async("./static/index.html").await
 }
 
@@ -46,7 +44,7 @@ async fn main() -> std::io::Result<()> {
             // data above :)
             //.wrap(middleware::Logger::default())
             // We'll bring in a custom that includes the transaction ID by default for the middleware logger:
-            .wrap(middleware::Logger::new("%{txid}e %a -> HTTP %s %r size: %b time: %T"))
+            .wrap(middleware::Logger::new("%{txid}e %a -> HTTP %s %r size: %b time: %T" "%{Referer}i" "%{User-Agent}i"))
             .service(index)
             // add additional services here after index service before the static Files service below
             .service(Files::new("/", "static"))
