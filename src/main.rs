@@ -9,13 +9,6 @@ use uuid::Uuid;
 use chrono::prelude::*;
 use std::env;
 
-#[get("/health")]
-async fn health(req: HttpRequest) -> impl Responder {
-    let peer = req.peer_addr();
-    log::info!("Health check from {:?} ", peer);
-    NamedFile::open_async("./static/index.html").await
-}
-
 #[get("/")]
 async fn index(req: HttpRequest) -> impl Responder {
     let txid = Uuid::new_v4().to_string();
@@ -46,6 +39,7 @@ async fn main() -> std::io::Result<()> {
             //.wrap(middleware::DefaultHeaders::new().add(("strict-transport-security", "max-age=31536000; includeSubdomains;")))
             // Note: Expect-CT header not used by default. Add as required, following the same
             // style below.
+            .wrap(middleware::DefaultHeaders::new().add(("content-security-policy", "default-src 'self'")))
             .wrap(middleware::DefaultHeaders::new().add(("x-content-type-options", "nosniff")))
             .wrap(middleware::DefaultHeaders::new().add(("x-frame-options", "SAMEORIGIN")))
             .wrap(middleware::DefaultHeaders::new().add(("x-xss-protection", "1; mode=block")))
@@ -53,8 +47,9 @@ async fn main() -> std::io::Result<()> {
             // data above :)
             //.wrap(middleware::Logger::default())
             // We'll bring in a custom that includes the transaction ID by default for the middleware logger:
-            .wrap(middleware::Logger::new("%{txid}e %a -> HTTP %s %r size: %b time: %T %{Referer}i %{User-Agent}i"))
-            .service(health)
+            .wrap(middleware::Logger::new("%{txid}e %a -> HTTP %s %r size: %b time: %T"))
+            // Example including the referer and user-agent:
+            // .wrap(middleware::Logger::new("%{txid}e %a -> HTTP %s %r size: %b server-time: %T %{Referer}i %{User-Agent}i"))
             .service(index)
             // add additional services here after index service before the static Files service below
             .service(Files::new("/", "static"))
