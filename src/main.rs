@@ -9,6 +9,14 @@ use uuid::Uuid;
 use chrono::prelude::*;
 use std::env;
 
+#[get("/health")]
+async fn health(req: HttpRequest) -> impl Responder {
+    let peer = req.peer_addr();
+    env::set_var("txid", "txid unset");
+    log::info!("Health check from {:?} ", peer);
+    NamedFile::open_async("./static/index.html").await
+}
+
 #[get("/")]
 async fn index(req: HttpRequest) -> impl Responder {
     let txid = Uuid::new_v4().to_string();
@@ -40,7 +48,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::DefaultHeaders::new().add(("x-content-type-options", "nosniff")))
             .wrap(middleware::DefaultHeaders::new().add(("x-frame-options", "SAMEORIGIN")))
             .wrap(middleware::DefaultHeaders::new().add(("x-xss-protection", "1; mode=block")))
-            // this access logging can be optionally commented to only log Transaction function
+            // This access logging can be optionally commented to only log Transaction function
             // data above :)
             //.wrap(middleware::Logger::default())
             // We'll bring in a custom that includes the transaction ID by default for the middleware logger:
