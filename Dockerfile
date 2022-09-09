@@ -1,5 +1,4 @@
 FROM ekidd/rust-musl-builder AS build
-WORKDIR /app
 COPY --chown=rust:rust . .
 RUN cargo install --path .
 FROM scratch
