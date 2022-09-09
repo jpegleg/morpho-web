@@ -27,5 +27,5 @@ protean_test() {
   curl -k https://localhost/index.html | sha256sum
   curl -k https://localhost/ | sha256sum
   curl -k https://localhost/build_id.txt | grep "78a4ea409fed76d3a3" || exit 1
-  #bash ../test_deploy_web && bash ../prod_deploy_web || bash ../prod_rollback_web
+  bash ../morpho_test_set_1 && bash ../morpho_prod_set_1 
 }
