@@ -75,7 +75,7 @@ fn load_rustls_config() -> rustls::ServerConfig {
         .collect();
     if keys.is_empty() {
         let readu: DateTime<Utc> = Utc::now();
-        eprintln!("{} - morpho FATAL - Open of privkey.pem paired with cert.pem failed, server must shutdown. Use PKCS8 PEM", readu);
+        eprintln!("{} - morpho FATAL - Open of privkey.pem paired with cert.pem failed, server must shutdown. Use PKCS8 PEM.", readu);
         std::process::exit(1);
     }
     config.with_single_cert(cert_chain, keys.remove(0)).unwrap()
