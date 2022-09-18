@@ -4,6 +4,8 @@
 
 A rust template for front-end web server microservice container using actix web framework.
 
+#### Also see the openssl version: https://github.com/jpegleg/morpho-web2
+
 The included Dockerfile uses the `FROM ekidd/rust-musl-builder AS build` to compile with cargo
 and then we copy the dependencies into a `FROM scratch` empty container. The resulting OCI
 image has no shell, nothing but the dependencies for the web server.
@@ -27,7 +29,8 @@ The purpose of the docker-compose.yml and the protean references are for some te
 ## rustls for HTTPS
 
 This program uses rustls for TLS, leveraging the strong defaults. It includes support for TLSv1.2 and TLSv1.3 only,
-with weak features disabled.
+with weak features disabled. The downside of rustls is that it doesn't have a wide of a range of feature support as openssl,
+although is very correct and performant and should ideally be adopted when possible.
 
 ## tokio async io
 
