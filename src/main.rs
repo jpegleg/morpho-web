@@ -8,6 +8,39 @@ use actix_web_lab::{header::StrictTransportSecurity, middleware::RedirectHttps};
 use uuid::Uuid;
 use chrono::prelude::*;
 use std::env;
+use curl::easy::{Easy, List};
+
+#[get("/health")]
+async fn healthchecks(req: HttpRequest) -> impl Responder {
+    let txid = Uuid::new_v4().to_string();
+    env::set_var("txid", &txid);
+    let peer = req.peer_addr();
+    let requ = req.headers();
+    let readi: DateTime<Utc> = Utc::now();
+    log::info!("{} {:?} /health GET request (health check) - from {:?} - {:?}", &txid, readi, peer, &requ);
+    let reada: DateTime<Utc> = Utc::now();
+    let mut data = Vec::new();
+    let mut handle = Easy::new();
+    let mut list = List::new();
+    list.append(&("txid:".to_owned() + &txid)).unwrap();
+    // see https://github.com/jpegleg/squirrel-tactix
+           // change to backend DNS name instead of localhost, etc
+    handle.url("http://localhost:8007/health").unwrap();
+    handle.http_headers(list).unwrap();
+    {
+        let mut transfer = handle.transfer();
+        transfer.write_function(|new_data| {
+            data.extend_from_slice(new_data);
+            Ok(new_data.len())
+        }).unwrap();
+       
+        transfer.perform().unwrap();
+    }
+    let mez: String = String::from_utf8(data.clone()).unwrap();
+    let nid = env::var("txid").unwrap();
+    log::info!("{} {:?} /health GET response from backend: {:?} - {:?}", nid, reada, &mez, requ);
+    HttpResponse::Ok().body(mez)
+}
 
 #[get("/")]
 async fn index(req: HttpRequest) -> impl Responder {
