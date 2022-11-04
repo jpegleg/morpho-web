@@ -17,3 +17,4 @@ log = "0.4"
 rustls = "0.20.2"
 rustls-pemfile = "1"
 uuid = { version = "0.4", features = ["serde", "v4"] }
+curl = "0.4.44"
