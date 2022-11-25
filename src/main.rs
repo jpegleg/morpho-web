@@ -2,7 +2,7 @@ use std::{fs::File, io::BufReader};
 use actix_files::Files;
 use rustls::{Certificate, PrivateKey, ServerConfig};
 use rustls_pemfile::{certs, pkcs8_private_keys};
-use actix_web::{middleware, App, HttpServer, get, Responder, HttpRequest};
+use actix_web::{middleware, App, HttpServer, get, Responder, HttpRequest, HttpResponse};
 use actix_files::NamedFile;
 use actix_web_lab::{header::StrictTransportSecurity, middleware::RedirectHttps};
 use uuid::Uuid;
