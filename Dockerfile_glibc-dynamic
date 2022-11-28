@@ -1,0 +1,12 @@
+ROM ubuntu as initial
+RUN rm -rf /usr/share/ /var/cache /var/lib/dpkg /usr/games /usr/lib32 /usr/local /opt /var/log /usr/libx32 /bin /sbin /usr/bin /usr/sbin /var/spool 
+
+FROM scratch
+COPY --from=initial / /
+WORKDIR /app/
+COPY ./morpho-server /morpho-server
+COPY ./static /app/static/
+COPY ./cert.pem /app/cert.pem
+COPY ./privkey.pem /app/privkey.pem
+EXPOSE 443
+CMD ["/morpho-server"]
