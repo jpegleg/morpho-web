@@ -6,7 +6,7 @@ A rust template for front-end web server microservice container using actix web 
 
 #### Also see the openssl version: https://github.com/jpegleg/morpho-web2
 
-The included Dockerfile_ekidd uses the `FROM ekidd/rust-musl-builder AS build` to compile with cargo
+The alternate build Dockerfile_ekidd uses the `FROM ekidd/rust-musl-builder AS build` to compile with cargo
 and then we copy the dependencies into a `FROM scratch` empty container. The resulting OCI
 image has no shell, nothing but the dependencies for the web server.
 
