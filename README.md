@@ -6,11 +6,20 @@ A rust template for front-end web server microservice container using actix web 
 
 #### Also see the openssl version: https://github.com/jpegleg/morpho-web2
 
-The included Dockerfile uses the `FROM ekidd/rust-musl-builder AS build` to compile with cargo
+The included Dockerfile_ekidd uses the `FROM ekidd/rust-musl-builder AS build` to compile with cargo
 and then we copy the dependencies into a `FROM scratch` empty container. The resulting OCI
 image has no shell, nothing but the dependencies for the web server.
 
-The base image is less than 12MB for the entire framework. The size of the added content from `static`
+11/27/22 - the ekidd builder has some issues when compiling these dependencies, so we have switched the builder to clux/muslrust:stable
+With this change, we are also choosing to separate the compiling and the docker image build into a two step process for more granular
+CI actions and artifact creation.
+
+```
+docker run -v $PWD:/volume --rm -t clux/muslrust:stable cargo build --release
+docker build -t "localhost:5000/morpho-web" .
+```
+
+The base image is less than 15MB for the entire framework. The size of the added content from `static`
 will increase the image size etc. Alternatively to doing a copy into the container image,
 the /app/static directory can be a volume mount containing the content to load. Note that by default the cert and key pair are in /app/ which is the workdir for the server, while the webroot is /app/static/.
 
