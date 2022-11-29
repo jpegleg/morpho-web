@@ -81,6 +81,7 @@ async fn main() -> std::io::Result<()> {
             // We'll bring in a custom that includes the transaction ID by default for the middleware logger:
             .wrap(middleware::Logger::new("%{txid}e %a -> HTTP %s %r size: %b server-time: %T %{Referer}i %{User-Agent}i"))
             .service(index)
+            .service(healthchecks)
             // add additional services here after index service before the static Files service below
             .service(Files::new("/", "static"))
 
