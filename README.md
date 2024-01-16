@@ -36,6 +36,8 @@ HSTS and security headers are inserted by default.
 
 #### https://github.com/jpegleg/callsoup for a morpho based service that includes reqwest callbacks and redis storage
 
+#### https://github.com/jpegleg/morpho-sessions for a morpho based service that includes cookies
+
 #### https://github.com/jpegleg/flying-squirrel-tactix postgresql manager with rustls
 
 #### https://github.com/jpegleg/squirrel-tactix postgresql manager plain tcp
