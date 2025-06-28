@@ -4,6 +4,10 @@
 
 A rust template for front-end web server microservice container using actix web framework.
 
+This version of morpho is now archived, only the README will be updated. Newer versions of crates have since come out that result in different needs. Rather than updating this one, it is being preserved for use or reference while the newer template is being refined and tested.
+
+Links will be added to this README for the new version/s, likely within the next few months.
+
 
 ## rustls for HTTPS
 
